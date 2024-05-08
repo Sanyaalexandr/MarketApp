@@ -1,9 +1,14 @@
 package com.example.marketapp.presentation.catalog.produtslist
 
+import android.util.Log
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import com.example.marketapp.presentation.catalog.categories.CategoriesScreenEvent
 import com.example.marketapp.presentation.catalog.categories.CategoriesScreenState
 import com.example.marketapp.presentation.catalog.categories.CategoriesViewModel
@@ -19,6 +24,21 @@ fun ProductsListScreen(
         .screenState
         .collectAsState()
         .value
+
+    val scrollState = rememberLazyGridState()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(key1 = Unit) {
+        productsListViewModel.screenEffect.flowWithLifecycle(
+            lifecycle = lifecycle,
+            minActiveState = Lifecycle.State.STARTED,
+        ).collect { effect ->
+            when (effect) {
+                ProductsListScreenEffect.ResetScrollState -> {
+                    scrollState.scrollToItem(0)
+                }
+            }
+        }
+    }
 
     val categoriesScreenState = categoriesViewModel
         .screenState
@@ -36,8 +56,9 @@ fun ProductsListScreen(
 
     ProductsListScreenContent(
         state = screenState,
+        scrollState = scrollState,
         onProductClick = onProductClick,
-        onResetClick = {
+        onResetCategory = {
             categoriesViewModel.onEvent(CategoriesScreenEvent.CategoryDropped)
         },
         onSelectCategoriesClick = onSelectCategoriesClick,

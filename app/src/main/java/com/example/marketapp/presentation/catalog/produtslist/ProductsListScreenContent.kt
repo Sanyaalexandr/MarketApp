@@ -1,5 +1,6 @@
 package com.example.marketapp.presentation.catalog.produtslist
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -56,12 +58,12 @@ private typealias ProductsListScreenEvents = (ProductsListScreenEvent) -> Unit
 @Composable
 fun ProductsListScreenContent(
     state: ProductsListScreenState,
-    onResetClick: () -> Unit = {},
+    scrollState: LazyGridState = rememberLazyGridState(),
+    onResetCategory: () -> Unit = {},
     onSelectCategoriesClick: () -> Unit = {},
     onProductClick: (Int) -> Unit = {},
     onEvent: ProductsListScreenEvents = {},
 ) {
-    val scrollState = rememberLazyGridState()
     val firstVisibleItemIndex by remember {
         derivedStateOf { scrollState.firstVisibleItemIndex }
     }
@@ -77,10 +79,13 @@ fun ProductsListScreenContent(
             searchString = state.searchString,
             elevation = categorySelectorElevation,
             selectedCategory = state.selectedCategory,
-            onResetClick = onResetClick,
+            onResetCategory = onResetCategory,
             onSelectCategoriesClick = onSelectCategoriesClick,
             onSearchClick = {
                 onEvent(ProductsListScreenEvent.Search)
+            },
+            onClearClick = {
+                onEvent(ProductsListScreenEvent.SearchStringUpdated(""))
             },
             onSearchStringUpdated = { searchString ->
                 onEvent(ProductsListScreenEvent.SearchStringUpdated(searchString))
@@ -115,8 +120,9 @@ private fun TopBar(
     elevation: Dp,
     selectedCategory: String?,
     onSearchClick: () -> Unit,
+    onClearClick: () -> Unit,
     onSearchStringUpdated: (String) -> Unit,
-    onResetClick: () -> Unit,
+    onResetCategory: () -> Unit,
     onSelectCategoriesClick: () -> Unit,
 ) {
     Surface(
@@ -130,11 +136,12 @@ private fun TopBar(
             SearchBar(
                 searchString = searchString,
                 onSearchClick = onSearchClick,
-                onSearchStringUpdated = onSearchStringUpdated
+                onSearchStringUpdated = onSearchStringUpdated,
+                onClearClick = onClearClick,
             )
             CategorySelector(
                 selectedCategory = selectedCategory,
-                onResetClick = onResetClick,
+                onResetCategory = onResetCategory,
                 onSelectCategoriesClick = onSelectCategoriesClick,
             )
         }
@@ -145,6 +152,7 @@ private fun TopBar(
 private fun SearchBar(
     searchString: String,
     onSearchStringUpdated: (String) -> Unit,
+    onClearClick: () -> Unit,
     onSearchClick: () -> Unit,
 ) {
     Row(
@@ -158,6 +166,11 @@ private fun SearchBar(
             leadingIcon = {
                 IconButton(onClick = onSearchClick) {
                     Icon(imageVector = Icons.Rounded.Search, contentDescription = "search icon")
+                }
+            },
+            trailingIcon = {
+                IconButton(onClick = onClearClick) {
+                    Icon(imageVector = Icons.Rounded.Clear, contentDescription = "clear icon")
                 }
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -175,7 +188,7 @@ private fun SearchBar(
 @Composable
 private fun CategorySelector(
     selectedCategory: String?,
-    onResetClick: () -> Unit,
+    onResetCategory: () -> Unit,
     onSelectCategoriesClick: () -> Unit,
 ) {
     Column(
@@ -188,7 +201,7 @@ private fun CategorySelector(
                 .fillMaxWidth()
         ) {
             TextButton(
-                onClick = onResetClick,
+                onClick = onResetCategory,
                 modifier = Modifier
             ) {
                 Icon(
@@ -263,7 +276,7 @@ private fun ProductsList(
     onRetryClick: () -> Unit
 ) {
     /*
-     Оверскрол эффект работает как-то криво. При быстром скролле при обновлении списка,
+     Оверскрол эффект в компоузе работает как-то криво. При быстром скролле при обновлении списка,
      список дальше не скролится пока не закончится эффект.
      Если быстро скролить, то можно не давать этому эффекту закончиться, соответственно список не будет скролится
      Эта штука лечит этот баг

@@ -1,7 +1,9 @@
 package com.example.marketapp.presentation.catalog.produtslist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.marketapp.SingleEventFlow
 import com.example.marketapp.data.model.products.ProductResponse
 import com.example.marketapp.data.repository.products.ProductsRepository
 import com.example.marketapp.domain.pagination.PaginatorImpl
@@ -11,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -34,12 +37,19 @@ sealed interface ProductsListScreenEvent {
     data object Search: ProductsListScreenEvent
 }
 
+sealed interface ProductsListScreenEffect {
+    data object ResetScrollState: ProductsListScreenEffect
+}
+
 @HiltViewModel
 class ProductsListViewModel @Inject constructor(
     private val productsRepository: ProductsRepository
 ): ViewModel() {
     private val _screenState = MutableStateFlow(ProductsListScreenState())
     val screenState = _screenState.asStateFlow()
+
+    private val _screenEffect = SingleEventFlow<ProductsListScreenEffect>()
+    val screenEffect = (_screenEffect as Flow<*>)
 
     fun onEvent(event: ProductsListScreenEvent) {
         when (event) {
@@ -74,28 +84,30 @@ class ProductsListViewModel @Inject constructor(
                 searchString = searchString
             )
         }
+        if (searchString.isBlank()) onSearch()
     }
 
     private fun onSearch() {
-        if (_screenState.value.searchString.isNotBlank()) {
-            _screenState.update { currentState ->
-                currentState.copy(
-                    page = 0,
-                    products = persistentListOf(),
-                )
-            }
-            paginator.reset()
-            loadNextProducts()
+        _screenState.update { currentState ->
+            currentState.copy(
+                page = 0,
+                products = persistentListOf(),
+                selectedCategory = null,
+            )
         }
+        paginator.reset()
+        loadNextProducts()
     }
 
     private fun onCategorySelected(category: String?) {
-        if (_screenState.value.selectedCategory != category) {
+        if (_screenState.value.selectedCategory != category ||
+            _screenState.value.searchString.isNotBlank() && category != null) {
             _screenState.update { currentState ->
                 currentState.copy(
                     page = 0,
                     products = persistentListOf(),
-                    selectedCategory = category
+                    selectedCategory = category,
+                    searchString = "",
                 )
             }
             paginator.reset()
@@ -138,17 +150,22 @@ class ProductsListViewModel @Inject constructor(
     private fun onSuccess(
         items: List<ProductResponse>,
         newKey: Int
-    ) = _screenState.update { currentState ->
-        currentState.copy(
-            products = (
-                currentState.products +
-                items.map { productResponse ->
-                    productResponse.toProductItem()
-                }
-            ).toImmutableList(),
-            error = null,
-            page = newKey,
-            endReached = items.isEmpty(),
-        )
+    ) {
+        _screenState.update { currentState ->
+            currentState.copy(
+                products = (
+                        currentState.products +
+                                items.map { productResponse ->
+                                    productResponse.toProductItem()
+                                }
+                        ).toImmutableList(),
+                error = null,
+                page = newKey,
+                endReached = items.isEmpty(),
+            )
+        }
+        if (_screenState.value.page == 1) {
+            _screenEffect.emit(ProductsListScreenEffect.ResetScrollState)
+        }
     }
 }

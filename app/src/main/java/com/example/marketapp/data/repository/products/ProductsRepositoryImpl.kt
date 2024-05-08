@@ -45,13 +45,12 @@ class ProductsRepositoryImpl @Inject constructor(
         searchString: String
     ): Result<List<ProductResponse>> =
         try {
-            Log.e("MyTag", "search")
+            val skip = page * pageSize
             val productResponse = marketApi.searchProducts(
-                q = searchString
-            ).also {
-                Log.e("MyTag", it.toString())
-            }.body()?.products ?: emptyList()
-            Log.e("MyTag", "search2")
+                q = searchString,
+                skip = skip,
+                limit = pageSize
+            ).body()?.products ?: emptyList()
             Result.success(productResponse)
         } catch (e: Exception) {
             Result.failure(e)
