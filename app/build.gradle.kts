@@ -73,7 +73,7 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.androidx.navigation.compose)
-    implementation("org.jetbrains.kotlinx","kotlinx-serialization-core-jvm", "1.5.1")
+    implementation(libs.kotlinx.serialization.core.jvm)
 
     //Hilt
     implementation (libs.hilt.android)

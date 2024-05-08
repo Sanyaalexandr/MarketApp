@@ -79,12 +79,14 @@ class ProductsListViewModel @Inject constructor(
         }
 
     private fun onSearchStringUpdated(searchString: String) {
-        _screenState.update { currentState ->
-            currentState.copy(
-                searchString = searchString
-            )
+        if (searchString.isNotBlank() || _screenState.value.searchString.isNotBlank()) {
+            _screenState.update { currentState ->
+                currentState.copy(
+                    searchString = searchString
+                )
+            }
+            if (searchString.isBlank()) onSearch()
         }
-        if (searchString.isBlank()) onSearch()
     }
 
     private fun onSearch() {
@@ -100,8 +102,7 @@ class ProductsListViewModel @Inject constructor(
     }
 
     private fun onCategorySelected(category: String?) {
-        if (_screenState.value.selectedCategory != category ||
-            _screenState.value.searchString.isNotBlank() && category != null) {
+        if (_screenState.value.selectedCategory != category) {
             _screenState.update { currentState ->
                 currentState.copy(
                     page = 0,

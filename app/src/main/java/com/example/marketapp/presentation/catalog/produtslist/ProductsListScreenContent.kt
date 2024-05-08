@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.OverscrollConfiguration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -74,44 +76,91 @@ fun ProductsListScreenContent(
     val categorySelectorElevation by animateDpAsState(
         targetValue = if (isContentScrolled) 5.dp else 0.dp, label = ""
     )
-    Column {
-        TopBar(
-            searchString = state.searchString,
-            elevation = categorySelectorElevation,
-            selectedCategory = state.selectedCategory,
-            onResetCategory = onResetCategory,
-            onSelectCategoriesClick = onSelectCategoriesClick,
-            onSearchClick = {
-                onEvent(ProductsListScreenEvent.Search)
-            },
-            onClearClick = {
-                onEvent(ProductsListScreenEvent.SearchStringUpdated(""))
-            },
-            onSearchStringUpdated = { searchString ->
-                onEvent(ProductsListScreenEvent.SearchStringUpdated(searchString))
-            }
-        )
-        if (state.error != null && state.products.isEmpty() && !state.isLoading) {
-            FullScreenErrorRetryMessage(
-                onRetryClick = { onEvent(ProductsListScreenEvent.LoadProducts) }
-            )
-        } else if (state.isLoading && state.products.isEmpty()) {
-            ProgressIndicator()
-        } else {
-            ProductsList(
-                state = state,
-                scrollState = scrollState,
-                isFirstItemVisible = firstVisibleItemIndex == 0,
-                onLoadProducts = {
-                    onEvent(ProductsListScreenEvent.LoadProducts)
+    Scaffold(
+        topBar = {
+            TopBar(
+                searchString = state.searchString,
+                elevation = categorySelectorElevation,
+                selectedCategory = state.selectedCategory,
+                onResetCategory = onResetCategory,
+                onSelectCategoriesClick = onSelectCategoriesClick,
+                onSearchClick = {
+                    onResetCategory.invoke()
+                    onEvent(ProductsListScreenEvent.Search)
                 },
-                onItemClick = onProductClick,
-                onRetryClick = {
-                    onEvent(ProductsListScreenEvent.LoadProducts)
+                onClearClick = {
+                    onEvent(ProductsListScreenEvent.SearchStringUpdated(""))
+                },
+                onSearchStringUpdated = { searchString ->
+                    onEvent(ProductsListScreenEvent.SearchStringUpdated(searchString))
                 }
             )
         }
+    ) { innerPaddings ->
+        Box(
+            modifier = Modifier.padding(innerPaddings).fillMaxWidth()
+        ) {
+            if (state.error != null && state.products.isEmpty() && !state.isLoading) {
+                FullScreenErrorRetryMessage(
+                    onRetryClick = { onEvent(ProductsListScreenEvent.LoadProducts) }
+                )
+            } else if (state.isLoading && state.products.isEmpty()) {
+                ProgressIndicator()
+            } else {
+                ProductsList(
+                    state = state,
+                    scrollState = scrollState,
+                    isFirstItemVisible = firstVisibleItemIndex == 0,
+                    onLoadProducts = {
+                        onEvent(ProductsListScreenEvent.LoadProducts)
+                    },
+                    onItemClick = onProductClick,
+                    onRetryClick = {
+                        onEvent(ProductsListScreenEvent.LoadProducts)
+                    }
+                )
+            }
+        }
     }
+//    Column {
+//        TopBar(
+//            searchString = state.searchString,
+//            elevation = categorySelectorElevation,
+//            selectedCategory = state.selectedCategory,
+//            onResetCategory = onResetCategory,
+//            onSelectCategoriesClick = onSelectCategoriesClick,
+//            onSearchClick = {
+//                onResetCategory.invoke()
+//                onEvent(ProductsListScreenEvent.Search)
+//            },
+//            onClearClick = {
+//                onEvent(ProductsListScreenEvent.SearchStringUpdated(""))
+//            },
+//            onSearchStringUpdated = { searchString ->
+//                onEvent(ProductsListScreenEvent.SearchStringUpdated(searchString))
+//            }
+//        )
+//        if (state.error != null && state.products.isEmpty() && !state.isLoading) {
+//            FullScreenErrorRetryMessage(
+//                onRetryClick = { onEvent(ProductsListScreenEvent.LoadProducts) }
+//            )
+//        } else if (state.isLoading && state.products.isEmpty()) {
+//            ProgressIndicator()
+//        } else {
+//            ProductsList(
+//                state = state,
+//                scrollState = scrollState,
+//                isFirstItemVisible = firstVisibleItemIndex == 0,
+//                onLoadProducts = {
+//                    onEvent(ProductsListScreenEvent.LoadProducts)
+//                },
+//                onItemClick = onProductClick,
+//                onRetryClick = {
+//                    onEvent(ProductsListScreenEvent.LoadProducts)
+//                }
+//            )
+//        }
+//    }
 }
 
 @Composable
