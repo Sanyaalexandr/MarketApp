@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MarketApp</string>
+    <string name="error_text_wrapped">Что-то пошло не так,\nпопробуйте обновить</string>
+    <string name="error_text">Что-то пошло не так, попробуйте обновить</string>
+    <string name="update">Обновить</string>
+    <string name="select_category">Выбрать категорию</string>
+    <string name="selected_category">Выбрана категория</string>
+    <string name="apply">Применить</string>
+    <string name="reset">Сбросить</string>
+</resources>
