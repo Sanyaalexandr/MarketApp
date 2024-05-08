@@ -122,45 +122,6 @@ fun ProductsListScreenContent(
             }
         }
     }
-//    Column {
-//        TopBar(
-//            searchString = state.searchString,
-//            elevation = categorySelectorElevation,
-//            selectedCategory = state.selectedCategory,
-//            onResetCategory = onResetCategory,
-//            onSelectCategoriesClick = onSelectCategoriesClick,
-//            onSearchClick = {
-//                onResetCategory.invoke()
-//                onEvent(ProductsListScreenEvent.Search)
-//            },
-//            onClearClick = {
-//                onEvent(ProductsListScreenEvent.SearchStringUpdated(""))
-//            },
-//            onSearchStringUpdated = { searchString ->
-//                onEvent(ProductsListScreenEvent.SearchStringUpdated(searchString))
-//            }
-//        )
-//        if (state.error != null && state.products.isEmpty() && !state.isLoading) {
-//            FullScreenErrorRetryMessage(
-//                onRetryClick = { onEvent(ProductsListScreenEvent.LoadProducts) }
-//            )
-//        } else if (state.isLoading && state.products.isEmpty()) {
-//            ProgressIndicator()
-//        } else {
-//            ProductsList(
-//                state = state,
-//                scrollState = scrollState,
-//                isFirstItemVisible = firstVisibleItemIndex == 0,
-//                onLoadProducts = {
-//                    onEvent(ProductsListScreenEvent.LoadProducts)
-//                },
-//                onItemClick = onProductClick,
-//                onRetryClick = {
-//                    onEvent(ProductsListScreenEvent.LoadProducts)
-//                }
-//            )
-//        }
-//    }
 }
 
 @Composable
