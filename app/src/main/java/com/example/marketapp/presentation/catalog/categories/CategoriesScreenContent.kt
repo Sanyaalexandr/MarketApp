@@ -20,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -149,13 +150,13 @@ private fun Categories(
                     .fillMaxWidth()
                     .clickable { onSelect(category, i) }
             ) {
-                Checkbox(
-                    checked = category.isSelected,
-                    onCheckedChange = {
+                RadioButton(
+                    selected = category.isSelected,
+                    onClick = {
                         onSelect(category, i)
                     }
                 )
-                Text(text = category.title)
+                Text(text = category.name)
             }
         }
         item { 
@@ -206,8 +207,8 @@ private fun TopBar(
 private fun SuccessContentPreview() {
     SuccessContent(
         categories = persistentListOf(
-            Category("category1", true),
-            Category("category2", false),
+            Category("category1", "category1", true),
+            Category("category2", "category2",false),
         )
     )
 }

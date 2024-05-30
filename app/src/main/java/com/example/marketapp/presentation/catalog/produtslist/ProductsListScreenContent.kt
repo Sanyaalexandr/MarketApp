@@ -81,7 +81,7 @@ fun ProductsListScreenContent(
             TopBar(
                 searchString = state.searchString,
                 elevation = categorySelectorElevation,
-                selectedCategory = state.selectedCategory,
+                selectedCategory = state.selectedCategory?.name,
                 onResetCategory = onResetCategory,
                 onSelectCategoriesClick = onSelectCategoriesClick,
                 onSearchClick = {
@@ -356,7 +356,7 @@ private fun CatalogScreenContentPreview() {
             products = persistentListOf(
                 ProductItem(
                     id = 1,
-                    price = 1000,
+                    price = 1000f,
                     title = "title",
                     description = "description description description description description ",
                     thumbnail = "",
@@ -365,7 +365,7 @@ private fun CatalogScreenContentPreview() {
                 ),
                 ProductItem(
                     id = 1,
-                    price = 1000,
+                    price = 1000f,
                     title = "title",
                     description = "description description description description description ",
                     thumbnail = "",
@@ -374,7 +374,7 @@ private fun CatalogScreenContentPreview() {
                 ),
                 ProductItem(
                     id = 1,
-                    price = 1000,
+                    price = 1000f,
                     title = "title",
                     description = "description description description description description ",
                     thumbnail = "",
@@ -383,7 +383,7 @@ private fun CatalogScreenContentPreview() {
                 ),
                 ProductItem(
                     id = 1,
-                    price = 1000,
+                    price = 1000f,
                     title = "title",
                     description = "description description description description description ",
                     thumbnail = "",
@@ -392,7 +392,7 @@ private fun CatalogScreenContentPreview() {
                 ),
                 ProductItem(
                     id = 1,
-                    price = 1000,
+                    price = 1000f,
                     title = "title",
                     description = "description description description description description ",
                     thumbnail = "",
@@ -401,7 +401,7 @@ private fun CatalogScreenContentPreview() {
                 ),
                 ProductItem(
                     id = 1,
-                    price = 1000,
+                    price = 1000f,
                     title = "title",
                     description = "description description description description description ",
                     thumbnail = "",

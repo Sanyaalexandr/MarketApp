@@ -1,7 +1,8 @@
 package com.example.marketapp.data.api
 
-import com.example.marketapp.data.model.products.ProductResponse
-import com.example.marketapp.data.model.products.ProductsListResponse
+import com.example.marketapp.data.model.category.CategoryResponse
+import com.example.marketapp.data.model.product.ProductResponse
+import com.example.marketapp.data.model.product.ProductsListResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -27,7 +28,7 @@ interface MarketApi {
     ): Response<ProductResponse>
 
     @GET("products/categories")
-    suspend fun getCategories(): Response<List<String>>
+    suspend fun getCategories(): Response<List<CategoryResponse>>
 
     @GET("products/search")
     suspend fun searchProducts(

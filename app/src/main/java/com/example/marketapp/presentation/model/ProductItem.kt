@@ -1,12 +1,12 @@
 package com.example.marketapp.presentation.model
 
 import androidx.compose.runtime.Immutable
-import com.example.marketapp.data.model.products.ProductResponse
+import com.example.marketapp.data.model.product.ProductResponse
 
 @Immutable
 data class ProductItem(
     val id: Int,
-    val price: Int,
+    val price: Float,
     val title: String,
     val description: String,
     val thumbnail: String,

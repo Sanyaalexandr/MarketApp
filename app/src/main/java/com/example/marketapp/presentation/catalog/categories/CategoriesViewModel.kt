@@ -60,9 +60,10 @@ class CategoriesViewModel @Inject constructor(
             _screenState.update { currentState ->
                 val categories = categoriesRepository.getCategories()
                     .getOrElse { return@update CategoriesScreenState.Error }
-                    .map {
-                        category -> Category(
-                            title = category,
+                    .map { categoryResponse ->
+                        Category(
+                            slug = categoryResponse.slug,
+                            name = categoryResponse.name,
                             isSelected = false,
                         )
                     }

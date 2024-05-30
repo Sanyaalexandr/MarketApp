@@ -1,6 +1,5 @@
 package com.example.marketapp.presentation.catalog.produtslist
 
-import android.util.Log
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,7 +49,7 @@ fun ProductsListScreen(
 
     LaunchedEffect(key1 = selectedCategory) {
         productsListViewModel.onEvent(
-            ProductsListScreenEvent.CategorySelected(selectedCategory?.title)
+            ProductsListScreenEvent.CategorySelected(selectedCategory)
         )
     }
 

@@ -2,7 +2,7 @@ package com.example.marketapp.presentation.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marketapp.data.model.products.ProductResponse
+import com.example.marketapp.data.model.product.ProductResponse
 import com.example.marketapp.data.repository.products.ProductsRepository
 import com.example.marketapp.presentation.model.ProductItem
 import com.example.marketapp.presentation.model.toProductItem

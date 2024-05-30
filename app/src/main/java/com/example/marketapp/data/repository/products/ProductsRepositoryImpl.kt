@@ -1,7 +1,7 @@
 package com.example.marketapp.data.repository.products
 
 import android.util.Log
-import com.example.marketapp.data.model.products.ProductResponse
+import com.example.marketapp.data.model.product.ProductResponse
 import com.example.marketapp.data.api.MarketApi
 import javax.inject.Inject
 

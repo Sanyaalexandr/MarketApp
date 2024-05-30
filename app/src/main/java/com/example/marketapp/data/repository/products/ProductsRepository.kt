@@ -1,6 +1,6 @@
 package com.example.marketapp.data.repository.products
 
-import com.example.marketapp.data.model.products.ProductResponse
+import com.example.marketapp.data.model.product.ProductResponse
 
 interface ProductsRepository {
 

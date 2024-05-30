@@ -1,12 +1,12 @@
 package com.example.marketapp.presentation.catalog.produtslist
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.marketapp.SingleEventFlow
-import com.example.marketapp.data.model.products.ProductResponse
+import com.example.marketapp.data.model.product.ProductResponse
 import com.example.marketapp.data.repository.products.ProductsRepository
 import com.example.marketapp.domain.pagination.PaginatorImpl
+import com.example.marketapp.presentation.model.Category
 import com.example.marketapp.presentation.model.ProductItem
 import com.example.marketapp.presentation.model.toProductItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,13 +26,13 @@ data class ProductsListScreenState(
     val error: String? = null,
     val endReached: Boolean = false,
     val page: Int = 0,
-    val selectedCategory: String? = null,
+    val selectedCategory: Category? = null,
     val searchString: String = "",
 )
 
 sealed interface ProductsListScreenEvent {
     data object LoadProducts: ProductsListScreenEvent
-    data class CategorySelected(val selectedCategory: String?): ProductsListScreenEvent
+    data class CategorySelected(val selectedCategory: Category?): ProductsListScreenEvent
     data class SearchStringUpdated(val searchString: String): ProductsListScreenEvent
     data object Search: ProductsListScreenEvent
 }
@@ -101,7 +101,7 @@ class ProductsListViewModel @Inject constructor(
         loadNextProducts()
     }
 
-    private fun onCategorySelected(category: String?) {
+    private fun onCategorySelected(category: Category?) {
         if (_screenState.value.selectedCategory != category) {
             _screenState.update { currentState ->
                 currentState.copy(
@@ -129,7 +129,7 @@ class ProductsListViewModel @Inject constructor(
             productsRepository.getProducts(
                 page = nextPage,
                 pageSize = PaginatorImpl.DEFAULT_PAGE_SIZE,
-                category = _screenState.value.selectedCategory
+                category = _screenState.value.selectedCategory?.slug
             )
         } else {
             productsRepository.searchProducts(

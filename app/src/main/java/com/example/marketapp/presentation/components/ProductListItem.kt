@@ -90,7 +90,7 @@ private fun ProductListItemPreview() {
     ProductListItem(
         product = ProductItem(
             id = 1,
-            price = 1000,
+            price = 1000f,
             title = "title",
             description = "description description description description description ",
             thumbnail = "",
